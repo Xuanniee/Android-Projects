@@ -1,0 +1,78 @@
+package com.example.diceroller
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.diceroller.ui.theme.DiceRollerTheme
+import androidx.compose.runtime.*
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            DiceRollerTheme {
+                DiceRollerApp()
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DiceRollerApp() {
+    // Needs to pass in a Modifier object with the desired specifications
+    DiceWithButtonAndImage(modifier = Modifier
+        .fillMaxSize()  // Fills the Entire Available Space
+        .wrapContentSize(Alignment.Center) // Dictates how the Objects should be at in the entire space
+    )
+}
+
+// Accepts a modifier argument of Type Modifier, and assigned a default value of Modifier
+@Composable
+fun DiceWithButtonAndImage(modifier: Modifier = Modifier) {
+    // Saving the Result of the Dice Roll
+    var result by remember { mutableStateOf(1) }
+    // Set an Image based on the Result
+    val imageResource = when (result) {
+        1 -> R.drawable.dice_1
+        2 -> R.drawable.dice_2
+        3 -> R.drawable.dice_3
+        4 -> R.drawable.dice_4
+        5 -> R.drawable.dice_5
+        else -> R.drawable.dice_6       // Forced to use Else
+    }
+
+    // Passing a Modifier instance ensures the Composables within the Column adhere to the constraints
+    // within the instance
+    Column(
+        modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Achieves a Vertical Layout
+        // Dice Image above the Roll Button
+        Image(painter = painterResource(id = imageResource), contentDescription = "Result: Dice 1")
+
+        // Spacer to space things vertically
+        Spacer(modifier = Modifier
+            .height(16.dp))
+
+        Button(onClick = { result = (1..6).random() }) {
+            Text(stringResource(R.string.roll))
+        }
+
+    }
+
+}
